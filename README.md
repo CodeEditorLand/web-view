@@ -1,4 +1,4 @@
-# web-view &emsp; [![Build Status]][travis] [![Latest Version]][crates.io] <!-- omit in toc -->
+# web-view &emsp; ![.github/workflows/ci.yml](https://github.com/Boscop/web-view/workflows/.github/workflows/ci.yml/badge.svg) [![Latest Version]][crates.io] <!-- omit in toc -->
 
 [Build Status]: https://api.travis-ci.org/Boscop/web-view.svg?branch=master
 [travis]: https://travis-ci.org/Boscop/web-view
@@ -91,7 +91,7 @@ As this library can be found as a crate on the [Rust Community Registry](https:/
 web-view = { version = "0.5.4" }
 ```
  
-If you want to make use of **Edge** on Windows environments then you'll need to use the following syntax instead:
+If you want to make use of **Edge** on Windows environments, you will need to have Windows 10 SDK installed through Visual Studio Installer and you'll need to use the following syntax instead:
  
 ```toml
 [dependencies]
@@ -126,20 +126,19 @@ fn main() {
 ```
 
 You should now be able to run `cargo build` and see something similar to the output below:
- 
-    ```text
-    $ cargo build
-      Updating crates.io index
-      Compiling pkg-config v0.3.17
-      Compiling bitflags v1.2.1
-      Compiling cc v1.0.47
-      Compiling boxfnonce v0.1.1
-      Compiling urlencoding v1.0.0
-      Compiling webview-sys v0.3.3
-      Compiling web-view v0.5.4
-      Compiling my-project v0.1.0 (C:\Users\Username\source\rust-projects\my-project)
-      Finished dev [unoptimized + debuginfo] target(s) in 8.36s
-    ```
+
+```text
+$ cargo build
+Updating crates.io index
+Compiling pkg-config v0.3.17
+Compiling cc v1.0.47
+Compiling boxfnonce v0.1.1
+Compiling urlencoding v1.0.0
+Compiling webview-sys v0.3.3
+Compiling web-view v0.5.4
+Compiling my-project v0.1.0 (C:\Users\Username\source\rust-projects\my-project)
+Finished dev [unoptimized + debuginfo] target(s) in 8.36s
+```
  
 Assuming you get a successful build all you have to do now is run it with: `cargo run`. Hopefully you'll see the same as below:
 
@@ -149,7 +148,7 @@ For more usage info please check out the [examples](https://github.com/Boscop/we
 
 ## Known Issues and Limitations
  
-* `Edge` feature switch not working on Windows 10. As of version `0.5.4` the Edge feature switch seems to have regressed and will not render content reliably. Trying to run the application with `cargo run` will always display an empty window before faulting, but if you run the binary created during the build process directly it will work as expected. For more information [see issue #96](https://github.com/Boscop/web-view/issues/96).
+* `Edge` feature switch not working on Windows 10 if run as `Administrator`. This was the root cause of the issue raised in [#96](https://github.com/Boscop/web-view/issues/96) and is the result of a bug in `Microsoft.Toolkit.Win32` which is [tracked here](https://github.com/windows-toolkit/Microsoft.Toolkit.Win32/issues/50).
 * `Edge` sandbox restrictions. If you decide to make use of an embedded Web Server to return your content you will need to run the following command to bypass the restriction that prevents communication with `localhost`:
  
     ``` powershell
