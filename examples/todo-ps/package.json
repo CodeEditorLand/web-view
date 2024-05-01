@@ -1,11 +1,40 @@
 {
+	"version": "0.0.1",
+	"private": false,
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/WebView#readme",
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/WebView/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/WebView.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
 	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
 		"build": "pulp build --to dist/app.js",
 		"dev": "npm-run-all -p -r watch-output watch-fast reload",
 		"dev-slow": "npm-run-all -p -r watch reload",
+		"prepublishOnly": "Build 'Source/**/*.ts'",
 		"prod": "pulp browserify -O --to build/app.js && parcel build build/app.js && inline-assets --htmlmin --cssmin index.html dist/bundle.html",
 		"reload": "browser-sync start --server --files \"dist/**/*.*, index.html, *.css\" --no-ghost-mode --port 2345 --no-open",
 		"watch-fast": "webpack --entry ./entry.js --output-filename dist/app.js --progress --watch",
 		"watch-output": "pulp -w build"
+	},
+	"devDependencies": {
+		"@playform/build": "0.0.7",
+		"@playform/document": "0.0.6"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
