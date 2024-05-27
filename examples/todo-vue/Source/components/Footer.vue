@@ -8,11 +8,11 @@
 import { clearDoneTasks } from "../rpc";
 
 export default {
-	methods: {
-		clearTasks: () => {
-			clearDoneTasks();
-		},
-	},
+  methods: {
+    clearTasks: function() {
+      clearDoneTasks();
+    }
+  }
 };
 </script>
 
