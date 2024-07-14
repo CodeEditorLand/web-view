@@ -83,7 +83,7 @@ jobs:
                   name: .-examples-todo-ps-Node-${{ matrix.node-version }}-Target
                   path: ./examples/todo-ps/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
