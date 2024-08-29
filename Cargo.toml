@@ -8,7 +8,7 @@ authors = [
 ]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/Boscop/web-view"
+repository = "HTTPS://GitHub.Com/Boscop/web-view"
 description = "Rust bindings for webview, a tiny cross-platform library to render web-based GUIs for desktop applications"
 keywords = ["web", "gui", "desktop", "electron", "webkit"]
 categories = [
