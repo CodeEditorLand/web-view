@@ -13,21 +13,21 @@
 import { markTask } from "../rpc";
 
 export default {
-	props: {
-		tasks: {
-			type: Array,
-			required: true,
-		},
-	},
-	methods: {
-		isDone: (task) => {
-			const checked = task.done ? "checked" : "unchecked";
-			return "task-item " + checked;
-		},
-		_markTask: (i, done) => {
-			markTask(i, !done);
-		},
-	},
+  props: {
+    tasks: {
+      type: Array,
+      required: true
+    }
+  },
+  methods: {
+    isDone: function(task) {
+      let checked = task.done ? "checked" : "unchecked";
+      return "task-item " + checked;
+    },
+    _markTask: function(i, done) {
+      markTask(i, !done);
+    }
+  }
 };
 </script>
 

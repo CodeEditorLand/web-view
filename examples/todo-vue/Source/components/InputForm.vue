@@ -8,15 +8,17 @@
 import { addTask } from "../rpc";
 
 export default {
-	data: () => ({
-		text: "",
-	}),
-	methods: {
-		submit: function (e) {
-			addTask(this.text);
-			this.text = "";
-		},
-	},
+  data: function() {
+    return {
+      text: ""
+    };
+  },
+  methods: {
+    submit: function(e) {
+      addTask(this.text);
+      this.text = "";
+    }
+  }
 };
 </script>
 

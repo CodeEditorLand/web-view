@@ -7,22 +7,22 @@
 </template>
 
 <script>
-import AppFotter from "./components/Footer.vue";
 import InputForm from "./components/InputForm.vue";
 import TaskList from "./components/TaskList.vue";
+import AppFotter from "./components/Footer.vue";
 
 export default {
-	props: {
-		tasks: {
-			type: Array,
-			required: true,
-		},
-	},
-	components: {
-		InputForm,
-		TaskList,
-		AppFotter,
-	},
+  props: {
+    tasks: {
+      type: Array,
+      required: true
+    }
+  },
+  components: {
+    InputForm,
+    TaskList,
+    AppFotter
+  }
 };
 </script>
 
