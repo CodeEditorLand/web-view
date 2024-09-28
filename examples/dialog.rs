@@ -7,50 +7,50 @@ use tfd::MessageBoxIcon;
 use web_view::*;
 
 fn main() -> WVResult {
-    let webview = web_view::builder()
-        .title("Dialog example")
-        .content(Content::Html(HTML))
-        .size(800, 600)
-        .resizable(true)
-        .debug(true)
-        .user_data(())
-        .invoke_handler(|webview, arg| {
-            match arg {
-                "open" => match tfd::open_file_dialog("Please choose a file...", "", None) {
-                    Some(path) => tfd::message_box_ok("File chosen", &path, MessageBoxIcon::Info),
-                    None => tfd::message_box_ok(
-                        "Warning",
-                        "You didn't choose a file.",
-                        MessageBoxIcon::Warning,
-                    ),
-                },
-                "save" => match tfd::save_file_dialog("Save file...", "") {
-                    Some(path) => tfd::message_box_ok("File chosen", &path, MessageBoxIcon::Info),
-                    None => tfd::message_box_ok(
-                        "Warning",
-                        "You didn't choose a file.",
-                        MessageBoxIcon::Warning,
-                    ),
-                },
-                "info" => {
-                    tfd::message_box_ok("Info", "This is a info dialog", MessageBoxIcon::Info)
-                }
-                "warning" => tfd::message_box_ok(
-                    "Warning",
-                    "This is a warning dialog",
-                    MessageBoxIcon::Warning,
-                ),
-                "error" => {
-                    tfd::message_box_ok("Error", "This is a error dialog", MessageBoxIcon::Error)
-                }
-                "exit" => webview.exit(),
-                _ => unimplemented!(),
-            };
-            Ok(())
-        })
-        .build()?;
+	let webview = web_view::builder()
+		.title("Dialog example")
+		.content(Content::Html(HTML))
+		.size(800, 600)
+		.resizable(true)
+		.debug(true)
+		.user_data(())
+		.invoke_handler(|webview, arg| {
+			match arg {
+				"open" => match tfd::open_file_dialog("Please choose a file...", "", None) {
+					Some(path) => tfd::message_box_ok("File chosen", &path, MessageBoxIcon::Info),
+					None => tfd::message_box_ok(
+						"Warning",
+						"You didn't choose a file.",
+						MessageBoxIcon::Warning,
+					),
+				},
+				"save" => match tfd::save_file_dialog("Save file...", "") {
+					Some(path) => tfd::message_box_ok("File chosen", &path, MessageBoxIcon::Info),
+					None => tfd::message_box_ok(
+						"Warning",
+						"You didn't choose a file.",
+						MessageBoxIcon::Warning,
+					),
+				},
+				"info" => {
+					tfd::message_box_ok("Info", "This is a info dialog", MessageBoxIcon::Info)
+				}
+				"warning" => tfd::message_box_ok(
+					"Warning",
+					"This is a warning dialog",
+					MessageBoxIcon::Warning,
+				),
+				"error" => {
+					tfd::message_box_ok("Error", "This is a error dialog", MessageBoxIcon::Error)
+				}
+				"exit" => webview.exit(),
+				_ => unimplemented!(),
+			};
+			Ok(())
+		})
+		.build()?;
 
-    webview.run()
+	webview.run()
 }
 
 const HTML: &str = r#"
