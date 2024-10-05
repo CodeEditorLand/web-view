@@ -1,5 +1,7 @@
 ## Note
-This is based off the official [yew todomvc example](https://github.com/yewstack/yew/tree/master/examples/todomvc).
+
+This is based off the official
+[yew todomvc example](https://github.com/yewstack/yew/tree/master/examples/todomvc).
 
 ## Yew TodoMVC Demo
 

@@ -21,7 +21,7 @@ fn main() {
 		.unwrap();
 }
 
-const HTML: &str = r#"
+const HTML:&str = r#"
 <!doctype html>
 <html>
 	<body>

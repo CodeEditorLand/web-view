@@ -7,18 +7,19 @@ extern crate mime_guess;
 extern crate rust_embed;
 extern crate web_view;
 
+use std::{borrow::Cow, sync::mpsc, thread};
+
 use actix_web::{body::Body, web, App, HttpRequest, HttpResponse, HttpServer};
 use futures::future::Future;
 use mime_guess::from_path;
 use rust_embed::RustEmbed;
-use std::{borrow::Cow, sync::mpsc, thread};
 use web_view::*;
 
 #[derive(RustEmbed)]
 #[folder = "examples/actix"]
 struct Asset;
 
-fn assets(req: HttpRequest) -> HttpResponse {
+fn assets(req:HttpRequest) -> HttpResponse {
 	let path = if req.path() == "/" {
 		// if there is no path, return default file
 		"index.html"
@@ -30,14 +31,14 @@ fn assets(req: HttpRequest) -> HttpResponse {
 	// query the file from embedded asset with specified path
 	match Asset::get(path) {
 		Some(content) => {
-			let body: Body = match content {
+			let body:Body = match content {
 				Cow::Borrowed(bytes) => bytes.into(),
 				Cow::Owned(bytes) => bytes.into(),
 			};
 			HttpResponse::Ok()
 				.content_type(from_path(path).first_or_octet_stream().as_ref())
 				.body(body)
-		}
+		},
 		None => HttpResponse::NotFound().body("404 Not Found"),
 	}
 }
@@ -50,9 +51,10 @@ fn main() {
 	thread::spawn(move || {
 		let sys = actix_rt::System::new("actix-example");
 
-		let server = HttpServer::new(|| App::new().route("*", web::get().to(assets)))
-			.bind("127.0.0.1:0")
-			.unwrap();
+		let server =
+			HttpServer::new(|| App::new().route("*", web::get().to(assets)))
+				.bind("127.0.0.1:0")
+				.unwrap();
 
 		// we specified the port to be 0,
 		// meaning the operating system

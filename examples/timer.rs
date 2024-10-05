@@ -7,6 +7,7 @@ use std::{
 	thread,
 	time::Duration,
 };
+
 use web_view::*;
 
 fn main() {
@@ -27,10 +28,10 @@ fn main() {
 					let mut counter = counter.lock().unwrap();
 					*counter = 0;
 					render(webview, *counter)?;
-				}
+				},
 				"exit" => {
 					webview.exit();
-				}
+				},
 				_ => unimplemented!(),
 			};
 			Ok(())
@@ -39,31 +40,33 @@ fn main() {
 		.unwrap();
 
 	let handle = webview.handle();
-	thread::spawn(move || loop {
-		{
-			let mut counter = counter_inner.lock().unwrap();
-			*counter += 1;
-			let count = *counter;
-			handle
-				.dispatch(move |webview| {
-					*webview.user_data_mut() -= 1;
-					render(webview, count)
-				})
-				.unwrap();
+	thread::spawn(move || {
+		loop {
+			{
+				let mut counter = counter_inner.lock().unwrap();
+				*counter += 1;
+				let count = *counter;
+				handle
+					.dispatch(move |webview| {
+						*webview.user_data_mut() -= 1;
+						render(webview, count)
+					})
+					.unwrap();
+			}
+			thread::sleep(Duration::from_secs(1));
 		}
-		thread::sleep(Duration::from_secs(1));
 	});
 
 	webview.run().unwrap();
 }
 
-fn render(webview: &mut WebView<i32>, counter: u32) -> WVResult {
+fn render(webview:&mut WebView<i32>, counter:u32) -> WVResult {
 	let user_data = *webview.user_data();
 	println!("counter: {}, userdata: {}", counter, user_data);
 	webview.eval(&format!("updateTicks({}, {})", counter, user_data))
 }
 
-const HTML: &str = r#"
+const HTML:&str = r#"
 <!doctype html>
 <html>
 	<body>

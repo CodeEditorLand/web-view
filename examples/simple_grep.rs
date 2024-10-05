@@ -6,11 +6,12 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate tinyfiledialogs as tfd;
 
+use std::{error::Error, ffi::OsString};
+
 use grep::{
 	regex::RegexMatcher,
 	searcher::{sinks::UTF8, BinaryDetection, SearcherBuilder},
 };
-use std::{error::Error, ffi::OsString};
 use tfd::MessageBoxIcon;
 use walkdir::WalkDir;
 use web_view::*;
@@ -32,9 +33,13 @@ fn main() {
 						Ok(s) => s,
 						Err(err) => {
 							let err_str = format!("{}", err);
-							tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
+							tfd::message_box_ok(
+								"Error",
+								&err_str,
+								MessageBoxIcon::Error,
+							);
 							OsString::from("")
-						}
+						},
 					};
 					if result.is_empty() {
 						tfd::message_box_ok(
@@ -46,23 +51,32 @@ fn main() {
 						let eval_str = format!("LoadTextArea({:?});", result);
 						webview.eval(&eval_str)?;
 					}
-				}
+				},
 
-				Browse {} => match tfd::open_file_dialog("Please choose a file...", "", None) {
-					Some(path_selected) => {
-						let eval_str = format!("SetPath({:?});", path_selected);
-						webview.eval(&eval_str)?;
-					}
-					None => {
-						tfd::message_box_ok(
-							"Warning",
-							"You didn't choose a file.",
-							MessageBoxIcon::Warning,
-						);
+				Browse {} => {
+					match tfd::open_file_dialog(
+						"Please choose a file...",
+						"",
+						None,
+					) {
+						Some(path_selected) => {
+							let eval_str =
+								format!("SetPath({:?});", path_selected);
+							webview.eval(&eval_str)?;
+						},
+						None => {
+							tfd::message_box_ok(
+								"Warning",
+								"You didn't choose a file.",
+								MessageBoxIcon::Warning,
+							);
+						},
 					}
 				},
 
-				Error { msg } => tfd::message_box_ok("Error", &msg, MessageBoxIcon::Error),
+				Error { msg } => {
+					tfd::message_box_ok("Error", &msg, MessageBoxIcon::Error)
+				},
 			}
 
 			Ok(())
@@ -74,14 +88,14 @@ fn main() {
 #[derive(Deserialize)]
 #[serde(tag = "cmd", rename_all = "camelCase")]
 pub enum Cmd {
-	Search { pattern: String, path: String },
+	Search { pattern:String, path:String },
 	Browse {},
-	Error { msg: String },
+	Error { msg:String },
 }
 
-fn search(pattern: &str, path: OsString) -> Result<OsString, Box<dyn Error>> {
+fn search(pattern:&str, path:OsString) -> Result<OsString, Box<dyn Error>> {
 	let matcher = RegexMatcher::new_line_matcher(&pattern)?;
-	let mut matches: OsString = OsString::new();
+	let mut matches:OsString = OsString::new();
 	let mut searcher = SearcherBuilder::new()
 		.binary_detection(BinaryDetection::quit(b'\x00'))
 		.line_number(true)
@@ -96,7 +110,7 @@ fn search(pattern: &str, path: OsString) -> Result<OsString, Box<dyn Error>> {
 				let err_str = format!("{}", err);
 				tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
 				continue;
-			}
+			},
 		};
 		if !entry.file_type().is_file() {
 			continue;
@@ -122,14 +136,14 @@ fn search(pattern: &str, path: OsString) -> Result<OsString, Box<dyn Error>> {
 				let err_str = format!("{}: {:?}", err, entry.path());
 				tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
 				continue;
-			}
+			},
 		}
 	}
 
 	Ok(matches)
 }
 
-const HTML: &str = r#"
+const HTML:&str = r#"
 <!doctype html>
 <html>
 	<head>

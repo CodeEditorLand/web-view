@@ -48,10 +48,13 @@ fn main() {
 
 				match serde_json::from_str(arg).unwrap() {
 					Init => {
-						*tasks = vec![Task { name: "Create Elm example".to_string(), done: true }];
-					}
+						*tasks = vec![Task {
+							name:"Create Elm example".to_string(),
+							done:true,
+						}];
+					},
 					Log { text } => println!("{}", text),
-					AddTask { name } => tasks.push(Task { name, done: false }),
+					AddTask { name } => tasks.push(Task { name, done:false }),
 					MarkTask { index, done } => tasks[index].done = done,
 					ClearDoneTasks => tasks.retain(|t| !t.done),
 				}
@@ -59,7 +62,8 @@ fn main() {
 				tasks.len()
 			};
 
-			webview.set_title(&format!("Rust Todo App ({} Tasks)", tasks_len))?;
+			webview
+				.set_title(&format!("Rust Todo App ({} Tasks)", tasks_len))?;
 			render(webview)
 		})
 		.build()
@@ -72,35 +76,38 @@ fn main() {
 	println!("final state: {:?}", res);
 }
 
-fn render(webview: &mut WebView<Vec<Task>>) -> WVResult {
+fn render(webview:&mut WebView<Vec<Task>>) -> WVResult {
 	let render_tasks = {
 		let tasks = webview.user_data();
 		println!("{:#?}", tasks);
-		format!("app.ports.fromRust.send({})", serde_json::to_string(tasks).unwrap())
+		format!(
+			"app.ports.fromRust.send({})",
+			serde_json::to_string(tasks).unwrap()
+		)
 	};
 	webview.eval(&render_tasks)
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Task {
-	name: String,
-	done: bool,
+	name:String,
+	done:bool,
 }
 
 #[derive(Deserialize)]
 #[serde(tag = "cmd")]
 pub enum Cmd {
 	Init,
-	Log { text: String },
-	AddTask { name: String },
-	MarkTask { index: usize, done: bool },
+	Log { text:String },
+	AddTask { name:String },
+	MarkTask { index:usize, done:bool },
 	ClearDoneTasks,
 }
 
-fn inline_style(s: &str) -> String {
+fn inline_style(s:&str) -> String {
 	format!(r#"<style type="text/css">{}</style>"#, s)
 }
 
-fn inline_script(s: &str) -> String {
+fn inline_script(s:&str) -> String {
 	format!(r#"<script type="text/javascript">{}</script>"#, s)
 }

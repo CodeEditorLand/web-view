@@ -16,7 +16,7 @@ fn main() {
 	println!("res: {:?}", res)
 }
 
-fn invoke_handler(wv: &mut WebView<usize>, arg: &str) -> WVResult {
+fn invoke_handler(wv:&mut WebView<usize>, arg:&str) -> WVResult {
 	if arg == "init" {
 		wv.eval("init()")?;
 	} else if arg == "update" {

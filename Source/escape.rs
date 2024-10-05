@@ -16,9 +16,7 @@ use std::fmt::{self, Write};
 ///
 /// view.eval(&format!("callback({});", web_view::escape(string)));
 /// ```
-pub fn escape(string: &str) -> Escaper {
-	Escaper(string)
-}
+pub fn escape(string:&str) -> Escaper { Escaper(string) }
 
 // "All code points may appear literally in a string literal except for the
 // closing quote code points, U+005C (REVERSE SOLIDUS), U+000D (CARRIAGE
@@ -27,7 +25,7 @@ pub fn escape(string: &str) -> Escaper {
 
 pub struct Escaper<'a>(&'a str);
 
-const SPECIAL: &[char] = &[
+const SPECIAL:&[char] = &[
 	'\n',       // U+000A (LINE FEED)
 	'\r',       // U+000D (CARRIAGE RETURN)
 	'\'',       // U+0027 (APOSTROPHE)
@@ -37,7 +35,7 @@ const SPECIAL: &[char] = &[
 ];
 
 impl<'a> fmt::Display for Escaper<'a> {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, f:&mut fmt::Formatter) -> fmt::Result {
 		let &Escaper(mut string) = self;
 
 		f.write_char('\'')?;
