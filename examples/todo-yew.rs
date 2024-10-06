@@ -51,10 +51,9 @@ fn main() {
 	thread::spawn(move || {
 		let sys = actix_rt::System::new("actix-example");
 
-		let server =
-			HttpServer::new(|| App::new().route("*", web::get().to(assets)))
-				.bind("127.0.0.1:0")
-				.unwrap();
+		let server = HttpServer::new(|| App::new().route("*", web::get().to(assets)))
+			.bind("127.0.0.1:0")
+			.unwrap();
 
 		// we specified the port to be 0,
 		// meaning the operating system

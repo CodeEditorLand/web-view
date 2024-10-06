@@ -56,12 +56,11 @@ use urlencoding::encode;
 /// and that is the css to insert int webview.
 /// With every call of this function new style element
 /// will get created with css pasted as its children.
-const CSS_INJECT_FUNCTION:&str =
-	"(function(e){var \
-	 t=document.createElement('style'),d=document.head||document.\
-	 getElementsByTagName('head')[0];t.setAttribute('type','text/css'),t.\
-	 styleSheet?t.styleSheet.cssText=e:t.appendChild(document.\
-	 createTextNode(e)),d.appendChild(t)})";
+const CSS_INJECT_FUNCTION:&str = "(function(e){var \
+                                  t=document.createElement('style'),d=document.head||document.\
+                                  getElementsByTagName('head')[0];t.setAttribute('type','text/css'\
+                                  ),t.styleSheet?t.styleSheet.cssText=e:t.appendChild(document.\
+                                  createTextNode(e)),d.appendChild(t)})";
 
 /// Content displayable inside a [`WebView`].
 ///
@@ -224,9 +223,7 @@ where
 	pub fn build(self) -> WVResult<WebView<'a, T>> {
 		macro_rules! require_field {
 			($name:ident) => {
-				self.$name.ok_or_else(|| {
-					Error::UninitializedField(stringify!($name))
-				})?
+				self.$name.ok_or_else(|| Error::UninitializedField(stringify!($name)))?
 			};
 		}
 
@@ -235,10 +232,7 @@ where
 		let url = match content {
 			Content::Url(url) => CString::new(url.as_ref())?,
 			Content::Html(html) => {
-				CString::new(format!(
-					"data:text/html,{}",
-					encode(html.as_ref())
-				))?
+				CString::new(format!("data:text/html,{}", encode(html.as_ref())))?
 			},
 		};
 		let user_data = require_field!(user_data);
@@ -360,9 +354,7 @@ impl<'a, T> WebView<'a, T> {
 		unsafe { webview_get_user_data(self.inner.unwrap()) as _ }
 	}
 
-	fn user_data_wrapper(&self) -> &UserData<'a, T> {
-		unsafe { &(*self.user_data_wrapper_ptr()) }
-	}
+	fn user_data_wrapper(&self) -> &UserData<'a, T> { unsafe { &(*self.user_data_wrapper_ptr()) } }
 
 	fn user_data_wrapper_mut(&mut self) -> &mut UserData<'a, T> {
 		unsafe { &mut (*self.user_data_wrapper_ptr()) }
@@ -372,9 +364,7 @@ impl<'a, T> WebView<'a, T> {
 	pub fn user_data(&self) -> &T { &self.user_data_wrapper().inner }
 
 	/// Borrows the user data mutably.
-	pub fn user_data_mut(&mut self) -> &mut T {
-		&mut self.user_data_wrapper_mut().inner
-	}
+	pub fn user_data_mut(&mut self) -> &mut T { &mut self.user_data_wrapper_mut().inner }
 
 	#[deprecated(note = "Please use exit instead")]
 	pub fn terminate(&mut self) { self.exit(); }
@@ -411,15 +401,7 @@ impl<'a, T> WebView<'a, T> {
 	/// ```
 	pub fn set_color<C:Into<Color>>(&mut self, color:C) {
 		let color = color.into();
-		unsafe {
-			webview_set_color(
-				self.inner.unwrap(),
-				color.r,
-				color.g,
-				color.b,
-				color.a,
-			)
-		}
+		unsafe { webview_set_color(self.inner.unwrap(), color.r, color.g, color.b, color.a) }
 	}
 
 	/// Sets the title displayed at the top of the window.
@@ -441,11 +423,9 @@ impl<'a, T> WebView<'a, T> {
 	}
 
 	/// Returns a builder for opening a new dialog window.
-	#[deprecated(note = "Please use crates like 'tinyfiledialogs' for dialog \
-	                     handling, see example in examples/dialog.rs")]
-	pub fn dialog<'b>(&'b mut self) -> DialogBuilder<'a, 'b, T> {
-		DialogBuilder::new(self)
-	}
+	#[deprecated(note = "Please use crates like 'tinyfiledialogs' for dialog handling, see \
+	                     example in examples/dialog.rs")]
+	pub fn dialog<'b>(&'b mut self) -> DialogBuilder<'a, 'b, T> { DialogBuilder::new(self) }
 
 	/// Iterates the event loop. Returns `None` if the view has been closed or
 	/// terminated.
@@ -453,8 +433,7 @@ impl<'a, T> WebView<'a, T> {
 		unsafe {
 			match webview_loop(self.inner.unwrap(), 1) {
 				0 => {
-					let closure_result =
-						&mut self.user_data_wrapper_mut().result;
+					let closure_result = &mut self.user_data_wrapper_mut().result;
 					match closure_result {
 						Ok(_) => Some(Ok(())),
 						e => Some(mem::replace(e, Ok(()))),
@@ -486,10 +465,11 @@ impl<'a, T> WebView<'a, T> {
 	}
 
 	unsafe fn _into_inner(&mut self) -> T {
-		let lock = self.user_data_wrapper().live.write().expect(
-			"A dispatch channel thread panicked while holding mutex to \
-			 WebView.",
-		);
+		let lock = self
+			.user_data_wrapper()
+			.live
+			.write()
+			.expect("A dispatch channel thread panicked while holding mutex to WebView.");
 
 		let user_data_ptr = self.user_data_wrapper_ptr();
 		webview_exit(self.inner.unwrap());
@@ -523,11 +503,7 @@ pub struct Handle<T> {
 
 impl<T> Clone for Handle<T> {
 	fn clone(&self) -> Self {
-		Handle {
-			inner:self.inner,
-			live:self.live.clone(),
-			_phantom:PhantomData,
-		}
+		Handle { inner:self.inner, live:self.live.clone(), _phantom:PhantomData }
 	}
 }
 
@@ -572,9 +548,8 @@ extern fn ffi_dispatch_handler<T>(webview:*mut CWebView, arg:*mut c_void) {
 	unsafe {
 		let mut handle = WebView::<T>::from_ptr(webview);
 		let result = {
-			let callback = Box::<
-				SendBoxFnOnce<'static, (&mut WebView<T>,), WVResult>,
-			>::from_raw(arg as _);
+			let callback =
+				Box::<SendBoxFnOnce<'static, (&mut WebView<T>,), WVResult>>::from_raw(arg as _);
 			callback.call(&mut handle)
 		};
 		handle.user_data_wrapper_mut().result = result;
@@ -588,10 +563,7 @@ extern fn ffi_invoke_handler<T>(webview:*mut CWebView, arg:*const c_char) {
 	unsafe {
 		let arg = CStr::from_ptr(arg).to_string_lossy().to_string();
 		let mut handle = WebView::<T>::from_ptr(webview);
-		let result = ((*handle.user_data_wrapper_ptr()).invoke_handler)(
-			&mut handle,
-			&arg,
-		);
+		let result = ((*handle.user_data_wrapper_ptr()).invoke_handler)(&mut handle, &arg);
 		handle.user_data_wrapper_mut().result = result;
 		// Do not clean up the webview on drop of the temporary WebView in
 		// handle

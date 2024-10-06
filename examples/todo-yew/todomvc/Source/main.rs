@@ -1,3 +1,1 @@
-fn main() {
-	yew::start_app::<todomvc::Model>();
-}
+fn main() { yew::start_app::<todomvc::Model>(); }

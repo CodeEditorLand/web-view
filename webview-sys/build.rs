@@ -8,10 +8,7 @@ fn main() {
 
 	let target = env::var("TARGET").unwrap();
 
-	build
-		.include("webview.h")
-		.flag_if_supported("-std=c11")
-		.flag_if_supported("-w");
+	build.include("webview.h").flag_if_supported("-std=c11").flag_if_supported("-w");
 
 	if env::var("DEBUG").is_err() {
 		build.define("NDEBUG", None);
@@ -31,9 +28,7 @@ fn main() {
 		} else {
 			build.file("webview_mshtml.c");
 
-			for &lib in
-				&["ole32", "comctl32", "oleaut32", "uuid", "gdi32", "user32"]
-			{
+			for &lib in &["ole32", "comctl32", "oleaut32", "uuid", "gdi32", "user32"] {
 				println!("cargo:rustc-link-lib={}", lib);
 			}
 		}

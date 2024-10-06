@@ -57,8 +57,7 @@ fn main() {
 				tasks.len()
 			};
 
-			webview
-				.set_title(&format!("Rust Todo App ({} Tasks)", tasks_len))?;
+			webview.set_title(&format!("Rust Todo App ({} Tasks)", tasks_len))?;
 			render(webview)
 		})
 		.build()
@@ -96,10 +95,6 @@ pub enum Cmd {
 	ClearDoneTasks,
 }
 
-fn inline_style(s:&str) -> String {
-	format!(r#"<style type="text/css">{}</style>"#, s)
-}
+fn inline_style(s:&str) -> String { format!(r#"<style type="text/css">{}</style>"#, s) }
 
-fn inline_script(s:&str) -> String {
-	format!(r#"<script type="text/javascript">{}</script>"#, s)
-}
+fn inline_script(s:&str) -> String { format!(r#"<script type="text/javascript">{}</script>"#, s) }

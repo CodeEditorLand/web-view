@@ -5,8 +5,10 @@ use WVResult;
 use WebView;
 
 /// A builder for opening a new dialog window.
-#[deprecated(note = "Please use crates like 'tinyfiledialogs' for dialog \
-                     handling, see example in examples/dialog.rs")]
+#[deprecated(
+	note = "Please use crates like 'tinyfiledialogs' for dialog handling, see example in \
+	        examples/dialog.rs"
+)]
 #[derive(Debug)]
 pub struct DialogBuilder<'a:'b, 'b, T:'a> {
 	webview:&'b mut WebView<'a, T>,
@@ -19,20 +21,14 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 	}
 
 	/// Opens a new open file dialog and returns the chosen file path.
-	pub fn open_file<S, P>(
-		&mut self,
-		title:S,
-		default_file:P,
-	) -> WVResult<Option<PathBuf>>
+	pub fn open_file<S, P>(&mut self, title:S, default_file:P) -> WVResult<Option<PathBuf>>
 	where
 		S: Into<String>,
 		P: Into<PathBuf>, {
 		let default_file = default_file.into().into_os_string();
-		let default_file =
-			default_file.to_str().expect("default_file is not valid utf-8");
+		let default_file = default_file.to_str().expect("default_file is not valid utf-8");
 
-		let result = tfd::open_file_dialog(&title.into(), default_file, None)
-			.map(|p| p.into());
+		let result = tfd::open_file_dialog(&title.into(), default_file, None).map(|p| p.into());
 		Ok(result)
 	}
 
@@ -52,13 +48,10 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 		S: Into<String>,
 		P: Into<PathBuf>, {
 		let default_directory = default_directory.into().into_os_string();
-		let default_directory = default_directory
-			.to_str()
-			.expect("default_directory is not valid utf-8");
+		let default_directory =
+			default_directory.to_str().expect("default_directory is not valid utf-8");
 
-		let result =
-			tfd::select_folder_dialog(&title.into(), default_directory)
-				.map(|p| p.into());
+		let result = tfd::select_folder_dialog(&title.into(), default_directory).map(|p| p.into());
 		Ok(result)
 	}
 
@@ -67,11 +60,7 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 	where
 		TS: Into<String>,
 		MS: Into<String>, {
-		tfd::message_box_ok(
-			&title.into(),
-			&message.into(),
-			MessageBoxIcon::Info,
-		);
+		tfd::message_box_ok(&title.into(), &message.into(), MessageBoxIcon::Info);
 		Ok(())
 	}
 
@@ -80,11 +69,7 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 	where
 		TS: Into<String>,
 		MS: Into<String>, {
-		tfd::message_box_ok(
-			&title.into(),
-			&message.into(),
-			MessageBoxIcon::Warning,
-		);
+		tfd::message_box_ok(&title.into(), &message.into(), MessageBoxIcon::Warning);
 		Ok(())
 	}
 
@@ -93,11 +78,7 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 	where
 		TS: Into<String>,
 		MS: Into<String>, {
-		tfd::message_box_ok(
-			&title.into(),
-			&message.into(),
-			MessageBoxIcon::Error,
-		);
+		tfd::message_box_ok(&title.into(), &message.into(), MessageBoxIcon::Error);
 		Ok(())
 	}
 }

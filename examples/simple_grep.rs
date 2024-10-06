@@ -33,11 +33,7 @@ fn main() {
 						Ok(s) => s,
 						Err(err) => {
 							let err_str = format!("{}", err);
-							tfd::message_box_ok(
-								"Error",
-								&err_str,
-								MessageBoxIcon::Error,
-							);
+							tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
 							OsString::from("")
 						},
 					};
@@ -54,14 +50,9 @@ fn main() {
 				},
 
 				Browse {} => {
-					match tfd::open_file_dialog(
-						"Please choose a file...",
-						"",
-						None,
-					) {
+					match tfd::open_file_dialog("Please choose a file...", "", None) {
 						Some(path_selected) => {
-							let eval_str =
-								format!("SetPath({:?});", path_selected);
+							let eval_str = format!("SetPath({:?});", path_selected);
 							webview.eval(&eval_str)?;
 						},
 						None => {
@@ -74,9 +65,7 @@ fn main() {
 					}
 				},
 
-				Error { msg } => {
-					tfd::message_box_ok("Error", &msg, MessageBoxIcon::Error)
-				},
+				Error { msg } => tfd::message_box_ok("Error", &msg, MessageBoxIcon::Error),
 			}
 
 			Ok(())

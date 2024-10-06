@@ -33,9 +33,7 @@ pub enum Error {
 impl Error {
 	/// Creates a custom error from a `T: Display + Debug + Send + Sync +
 	/// 'static`.
-	pub fn custom<E:CustomError>(error:E) -> Error {
-		Error::Custom(Box::new(error))
-	}
+	pub fn custom<E:CustomError>(error:E) -> Error { Error::Custom(Box::new(error)) }
 }
 
 impl error::Error for Error {
@@ -58,11 +56,7 @@ impl Display for Error {
 			Error::JsEvaluation => write!(f, "Failed to evaluate JavaScript."),
 			Error::CssInjection => write!(f, "Failed to inject CSS."),
 			Error::Dispatch => {
-				write!(
-					f,
-					"Closure could not be dispatched. WebView was likely \
-					 dropped."
-				)
+				write!(f, "Closure could not be dispatched. WebView was likely dropped.")
 			},
 			Error::Custom(e) => write!(f, "Error: {}", e),
 		}

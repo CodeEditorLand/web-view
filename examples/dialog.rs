@@ -17,17 +17,9 @@ fn main() -> WVResult {
 		.invoke_handler(|webview, arg| {
 			match arg {
 				"open" => {
-					match tfd::open_file_dialog(
-						"Please choose a file...",
-						"",
-						None,
-					) {
+					match tfd::open_file_dialog("Please choose a file...", "", None) {
 						Some(path) => {
-							tfd::message_box_ok(
-								"File chosen",
-								&path,
-								MessageBoxIcon::Info,
-							)
+							tfd::message_box_ok("File chosen", &path, MessageBoxIcon::Info)
 						},
 						None => {
 							tfd::message_box_ok(
@@ -41,11 +33,7 @@ fn main() -> WVResult {
 				"save" => {
 					match tfd::save_file_dialog("Save file...", "") {
 						Some(path) => {
-							tfd::message_box_ok(
-								"File chosen",
-								&path,
-								MessageBoxIcon::Info,
-							)
+							tfd::message_box_ok("File chosen", &path, MessageBoxIcon::Info)
 						},
 						None => {
 							tfd::message_box_ok(
@@ -57,11 +45,7 @@ fn main() -> WVResult {
 					}
 				},
 				"info" => {
-					tfd::message_box_ok(
-						"Info",
-						"This is a info dialog",
-						MessageBoxIcon::Info,
-					)
+					tfd::message_box_ok("Info", "This is a info dialog", MessageBoxIcon::Info)
 				},
 				"warning" => {
 					tfd::message_box_ok(
@@ -71,11 +55,7 @@ fn main() -> WVResult {
 					)
 				},
 				"error" => {
-					tfd::message_box_ok(
-						"Error",
-						"This is a error dialog",
-						MessageBoxIcon::Error,
-					)
+					tfd::message_box_ok("Error", "This is a error dialog", MessageBoxIcon::Error)
 				},
 				"exit" => webview.exit(),
 				_ => unimplemented!(),

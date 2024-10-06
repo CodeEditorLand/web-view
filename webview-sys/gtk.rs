@@ -11,8 +11,7 @@ use javascriptcore_sys::*;
 use libc::{c_char, c_double, c_int, c_void};
 use webkit2gtk_sys::*;
 
-type ExternalInvokeCallback =
-	extern fn(webview:*mut WebView, arg:*const c_char);
+type ExternalInvokeCallback = extern fn(webview:*mut WebView, arg:*const c_char);
 
 #[repr(C)]
 struct WebView {
@@ -41,10 +40,7 @@ unsafe extern fn webview_set_title(webview:*mut WebView, title:*const c_char) {
 }
 
 #[no_mangle]
-unsafe extern fn webview_set_fullscreen(
-	webview:*mut WebView,
-	fullscreen:c_int,
-) {
+unsafe extern fn webview_set_fullscreen(webview:*mut WebView, fullscreen:c_int) {
 	if fullscreen > 0 {
 		gtk_window_fullscreen(mem::transmute((*webview).window));
 	} else {
@@ -120,10 +116,7 @@ unsafe extern fn webview_new(
 
 	g_signal_connect_data(
 		mem::transmute(m),
-		CStr::from_bytes_with_nul_unchecked(
-			b"script-message-received::external\0",
-		)
-		.as_ptr(),
+		CStr::from_bytes_with_nul_unchecked(b"script-message-received::external\0").as_ptr(),
 		Some(mem::transmute(external_message_received_cb as *const ())),
 		mem::transmute(w),
 		None,
@@ -152,9 +145,7 @@ unsafe extern fn webview_new(
 	webkit_settings_set_enable_accelerated_2d_canvas(settings, 1);
 
 	if debug > 0 {
-		webkit_settings_set_enable_write_console_messages_to_stdout(
-			settings, 1,
-		);
+		webkit_settings_set_enable_write_console_messages_to_stdout(settings, 1);
 		webkit_settings_set_enable_developer_extras(settings, 1);
 	} else {
 		g_signal_connect_data(
@@ -216,14 +207,10 @@ unsafe extern fn external_message_received_cb(
 }
 
 #[no_mangle]
-unsafe extern fn webview_get_user_data(webview:*mut WebView) -> *mut c_void {
-	(*webview).userdata
-}
+unsafe extern fn webview_get_user_data(webview:*mut WebView) -> *mut c_void { (*webview).userdata }
 
 #[no_mangle]
-unsafe extern fn webview_free(webview:*mut WebView) {
-	let _ = Box::from_raw(webview);
-}
+unsafe extern fn webview_free(webview:*mut WebView) { let _ = Box::from_raw(webview); }
 
 #[no_mangle]
 unsafe extern fn webview_loop(webview:*mut WebView, blocking:c_int) -> c_int {
@@ -232,23 +219,14 @@ unsafe extern fn webview_loop(webview:*mut WebView, blocking:c_int) -> c_int {
 }
 
 #[no_mangle]
-unsafe extern fn webview_set_color(
-	webview:*mut WebView,
-	r:u8,
-	g:u8,
-	b:u8,
-	a:u8,
-) {
+unsafe extern fn webview_set_color(webview:*mut WebView, r:u8, g:u8, b:u8, a:u8) {
 	let color = GdkRGBA {
 		red:r as c_double / 255.0,
 		green:g as c_double / 255.0,
 		blue:b as c_double / 255.0,
 		alpha:a as c_double / 255.0,
 	};
-	webkit_web_view_set_background_color(
-		mem::transmute((*webview).webview),
-		&color,
-	);
+	webkit_web_view_set_background_color(mem::transmute((*webview).webview), &color);
 }
 
 unsafe extern fn webview_load_changed_cb(
@@ -307,8 +285,7 @@ unsafe extern fn webview_dispatch_wrapper(userdata:gpointer) -> gboolean {
 	let webview:*mut WebView = mem::transmute(userdata);
 
 	loop {
-		let arg:*mut DispatchArg =
-			mem::transmute(g_async_queue_try_pop((*webview).queue));
+		let arg:*mut DispatchArg = mem::transmute(g_async_queue_try_pop((*webview).queue));
 		if arg.is_null() {
 			break;
 		}
@@ -321,11 +298,7 @@ unsafe extern fn webview_dispatch_wrapper(userdata:gpointer) -> gboolean {
 }
 
 #[no_mangle]
-unsafe extern fn webview_dispatch(
-	webview:*mut WebView,
-	func:DispatchFn,
-	arg:*mut c_void,
-) {
+unsafe extern fn webview_dispatch(webview:*mut WebView, func:DispatchFn, arg:*mut c_void) {
 	let arg = Box::new(DispatchArg { func, webview, arg });
 
 	let queue = (*webview).queue;
@@ -334,10 +307,7 @@ unsafe extern fn webview_dispatch(
 	g_async_queue_push_unlocked(queue, mem::transmute(Box::into_raw(arg)));
 
 	if g_async_queue_length_unlocked(queue) == 1 {
-		gdk_threads_add_idle(
-			Some(webview_dispatch_wrapper),
-			mem::transmute(webview),
-		);
+		gdk_threads_add_idle(Some(webview_dispatch_wrapper), mem::transmute(webview));
 	}
 
 	g_async_queue_unlock(queue);
@@ -349,9 +319,7 @@ unsafe extern fn webview_destroy_cb(_widget:*mut GtkWidget, arg:gpointer) {
 }
 
 #[no_mangle]
-unsafe extern fn webview_exit(webview:*mut WebView) {
-	(*webview).should_exit = 1;
-}
+unsafe extern fn webview_exit(webview:*mut WebView) { (*webview).should_exit = 1; }
 
 #[no_mangle]
 unsafe extern fn webview_print_log(s:*const c_char) {
