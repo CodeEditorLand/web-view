@@ -1,8 +1,8 @@
 {
-	"dependencies": {},
-	"devDependencies": {},
 	"scripts": {
 		"build": "parcel build src/app.js --out-dir build --global app",
 		"start": "parcel src/index.html --global app"
-	}
+	},
+	"dependencies": {},
+	"devDependencies": {}
 }
