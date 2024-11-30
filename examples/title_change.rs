@@ -24,7 +24,9 @@ const HTML:&str = r#"
             function updateTitle(e) {
                 external.invoke(e.target.value);
             }
+
             var el = document.getElementById("title");
+
             el.addEventListener("input", updateTitle, false);
 		</script>
 	</body>

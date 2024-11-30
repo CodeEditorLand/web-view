@@ -26,9 +26,11 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 		S: Into<String>,
 		P: Into<PathBuf>, {
 		let default_file = default_file.into().into_os_string();
+
 		let default_file = default_file.to_str().expect("default_file is not valid utf-8");
 
 		let result = tfd::open_file_dialog(&title.into(), default_file, None).map(|p| p.into());
+
 		Ok(result)
 	}
 
@@ -48,10 +50,12 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 		S: Into<String>,
 		P: Into<PathBuf>, {
 		let default_directory = default_directory.into().into_os_string();
+
 		let default_directory =
 			default_directory.to_str().expect("default_directory is not valid utf-8");
 
 		let result = tfd::select_folder_dialog(&title.into(), default_directory).map(|p| p.into());
+
 		Ok(result)
 	}
 
@@ -61,6 +65,7 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 		TS: Into<String>,
 		MS: Into<String>, {
 		tfd::message_box_ok(&title.into(), &message.into(), MessageBoxIcon::Info);
+
 		Ok(())
 	}
 
@@ -70,6 +75,7 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 		TS: Into<String>,
 		MS: Into<String>, {
 		tfd::message_box_ok(&title.into(), &message.into(), MessageBoxIcon::Warning);
+
 		Ok(())
 	}
 
@@ -79,6 +85,7 @@ impl<'a:'b, 'b, T:'a> DialogBuilder<'a, 'b, T> {
 		TS: Into<String>,
 		MS: Into<String>, {
 		tfd::message_box_ok(&title.into(), &message.into(), MessageBoxIcon::Error);
+
 		Ok(())
 	}
 }

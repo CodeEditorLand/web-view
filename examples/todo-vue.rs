@@ -58,6 +58,7 @@ fn main() {
 			};
 
 			webview.set_title(&format!("Rust Todo App ({} Tasks)", tasks_len))?;
+
 			render(webview)
 		})
 		.build()
@@ -73,9 +74,12 @@ fn main() {
 fn render(webview:&mut WebView<Vec<Task>>) -> WVResult {
 	let render_tasks = {
 		let tasks = webview.user_data();
+
 		println!("{:#?}", tasks);
+
 		format!("app.fromRust({})", serde_json::to_string(tasks).unwrap())
 	};
+
 	webview.eval(&render_tasks)
 }
 

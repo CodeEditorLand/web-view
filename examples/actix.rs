@@ -35,6 +35,7 @@ fn assets(req:HttpRequest) -> HttpResponse {
 				Cow::Borrowed(bytes) => bytes.into(),
 				Cow::Owned(bytes) => bytes.into(),
 			};
+
 			HttpResponse::Ok()
 				.content_type(from_path(path).first_or_octet_stream().as_ref())
 				.body(body)
@@ -45,6 +46,7 @@ fn assets(req:HttpRequest) -> HttpResponse {
 
 fn main() {
 	let (server_tx, server_rx) = mpsc::channel();
+
 	let (port_tx, port_rx) = mpsc::channel();
 
 	// start actix web server in separate thread
@@ -62,14 +64,18 @@ fn main() {
 		// get the first bound address' port,
 		// so we know where to point webview at
 		let port = server.addrs().first().unwrap().port();
+
 		let server = server.start();
 
 		let _ = port_tx.send(port);
+
 		let _ = server_tx.send(server);
+
 		let _ = sys.run();
 	});
 
 	let port = port_rx.recv().unwrap();
+
 	let server = server_rx.recv().unwrap();
 
 	// start web view in current thread

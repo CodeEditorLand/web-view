@@ -61,6 +61,7 @@ impl<'a> fmt::Display for Escaper<'a> {
 				string = chars.as_str();
 			} else {
 				f.write_str(string)?;
+
 				break;
 			}
 		}
@@ -74,6 +75,8 @@ impl<'a> fmt::Display for Escaper<'a> {
 #[test]
 fn test() {
 	let plain = "ABC \n\r' abc \\  \u{2028}   \u{2029}123";
+
 	let escaped = escape(plain).to_string();
+
 	assert!(escaped == "'ABC \\n\\r\\' abc \\\\  \\u2028   \\u2029123'");
 }

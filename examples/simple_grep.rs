@@ -33,10 +33,13 @@ fn main() {
 						Ok(s) => s,
 						Err(err) => {
 							let err_str = format!("{}", err);
+
 							tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
+
 							OsString::from("")
 						},
 					};
+
 					if result.is_empty() {
 						tfd::message_box_ok(
 							"Information",
@@ -45,6 +48,7 @@ fn main() {
 						);
 					} else {
 						let eval_str = format!("LoadTextArea({:?});", result);
+
 						webview.eval(&eval_str)?;
 					}
 				},
@@ -53,6 +57,7 @@ fn main() {
 					match tfd::open_file_dialog("Please choose a file...", "", None) {
 						Some(path_selected) => {
 							let eval_str = format!("SetPath({:?});", path_selected);
+
 							webview.eval(&eval_str)?;
 						},
 						None => {
@@ -84,7 +89,9 @@ pub enum Cmd {
 
 fn search(pattern:&str, path:OsString) -> Result<OsString, Box<dyn Error>> {
 	let matcher = RegexMatcher::new_line_matcher(&pattern)?;
+
 	let mut matches:OsString = OsString::new();
+
 	let mut searcher = SearcherBuilder::new()
 		.binary_detection(BinaryDetection::quit(b'\x00'))
 		.line_number(true)
@@ -97,10 +104,13 @@ fn search(pattern:&str, path:OsString) -> Result<OsString, Box<dyn Error>> {
 			Ok(entry) => entry,
 			Err(err) => {
 				let err_str = format!("{}", err);
+
 				tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
+
 				continue;
 			},
 		};
+
 		if !entry.file_type().is_file() {
 			continue;
 		}
@@ -115,15 +125,20 @@ fn search(pattern:&str, path:OsString) -> Result<OsString, Box<dyn Error>> {
 					lnum.to_string(),
 					line.to_string()
 				));
+
 				matches.push(&matched_line);
+
 				matches.push("\n");
+
 				Ok(true)
 			}),
 		) {
 			Ok(()) => (),
 			Err(err) => {
 				let err_str = format!("{}: {:?}", err, entry.path());
+
 				tfd::message_box_ok("Error", &err_str, MessageBoxIcon::Error);
+
 				continue;
 			},
 		}
@@ -139,27 +154,38 @@ const HTML:&str = r#"
 		<style>
 			.textarea {
 				width: 100%;
+
 				height: 30em;
+
 				font-size: 1em;				
 			}
 		</style>
 		<script type="text/javascript">
 			'use strict';
+
 			var rpc = {
 				invoke : function(arg) { window.external.invoke(JSON.stringify(arg)); },
 				search : function() {
 					var pattern = document.getElementById("pattern");
+
 					var path = document.getElementById("path");
+
 					if (pattern.value.trim().length === 0) {
 						rpc.error("No pattern entered!");
+
 						return;
 					}
+
 					if (path.value.trim().length === 0) {
 						rpc.error("No path entered!");
+
 						return;
 					}
+
 					var textArea = document.getElementById("text_box");
+
 					textArea.value = "";
+
 					rpc.invoke({cmd : 'search', path : path.value, pattern : pattern.value});
 				},
 				browse : function() { rpc.invoke({cmd : 'browse'}); },
@@ -168,10 +194,13 @@ const HTML:&str = r#"
 				
 			function LoadTextArea(data) {
 				var textArea = document.getElementById("text_box");
+
 				textArea.value = data;
 			}
+
 			function SetPath(path_selected) {
 				var path = document.getElementById("path");
+
 				path.value = path_selected;
 			}
 		</script>

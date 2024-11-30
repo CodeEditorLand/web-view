@@ -60,6 +60,7 @@ fn main() -> WVResult {
 				"exit" => webview.exit(),
 				_ => unimplemented!(),
 			};
+
 			Ok(())
 		})
 		.build()?;

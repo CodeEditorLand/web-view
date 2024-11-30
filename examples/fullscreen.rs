@@ -16,6 +16,7 @@ fn main() {
 				"exit" => webview.set_fullscreen(false),
 				_ => (),
 			}
+
 			Ok(())
 		})
 		.run()

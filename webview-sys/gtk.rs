@@ -88,6 +88,7 @@ unsafe extern fn webview_new(
 	(*w).queue = g_async_queue_new();
 
 	let window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+
 	gtk_window_set_title(mem::transmute(window), title);
 	(*w).window = window;
 
@@ -102,13 +103,16 @@ unsafe extern fn webview_new(
 	}
 
 	gtk_window_set_resizable(mem::transmute(window), resizable);
+
 	gtk_window_set_position(mem::transmute(window), GTK_WIN_POS_CENTER);
 
 	let scroller = gtk_scrolled_window_new(ptr::null_mut(), ptr::null_mut());
+
 	gtk_container_add(mem::transmute(window), scroller);
 	(*w).scroller = scroller;
 
 	let m = webkit_user_content_manager_new();
+
 	webkit_user_content_manager_register_script_message_handler(
 		m,
 		CStr::from_bytes_with_nul_unchecked(b"external\0").as_ptr(),
@@ -125,10 +129,12 @@ unsafe extern fn webview_new(
 
 	let webview = webkit_web_view_new_with_user_content_manager(m);
 	(*w).webview = webview;
+
 	webkit_web_view_load_uri(
 		mem::transmute(webview),
 		if url.is_null() { b"\0".as_ptr() as *const _ } else { url },
 	);
+
 	g_signal_connect_data(
 		mem::transmute(webview),
 		CStr::from_bytes_with_nul_unchecked(b"load-changed\0").as_ptr(),
@@ -137,15 +143,18 @@ unsafe extern fn webview_new(
 		None,
 		0,
 	);
+
 	gtk_container_add(mem::transmute(scroller), webview);
 
 	let settings = webkit_web_view_get_settings(mem::transmute(webview));
 	// Enable webgl and canvas features.
 	webkit_settings_set_enable_webgl(settings, 1);
+
 	webkit_settings_set_enable_accelerated_2d_canvas(settings, 1);
 
 	if debug > 0 {
 		webkit_settings_set_enable_write_console_messages_to_stdout(settings, 1);
+
 		webkit_settings_set_enable_developer_extras(settings, 1);
 	} else {
 		g_signal_connect_data(
@@ -196,12 +205,19 @@ unsafe extern fn external_message_received_cb(
 	arg:gpointer,
 ) {
 	let webview:*mut WebView = mem::transmute(arg);
+
 	let context = webkit_javascript_result_get_global_context(r);
+
 	let value = webkit_javascript_result_get_value(r);
+
 	let js = JSValueToStringCopy(context, value, ptr::null_mut());
+
 	let n = JSStringGetMaximumUTF8CStringSize(js);
+
 	let mut s = Vec::new();
+
 	s.reserve(n);
+
 	JSStringGetUTF8CString(js, s.as_mut_ptr(), n);
 	((*webview).external_invoke_cb)(webview, s.as_ptr());
 }
@@ -226,6 +242,7 @@ unsafe extern fn webview_set_color(webview:*mut WebView, r:u8, g:u8, b:u8, a:u8)
 		blue:b as c_double / 255.0,
 		alpha:a as c_double / 255.0,
 	};
+
 	webkit_web_view_set_background_color(mem::transmute((*webview).webview), &color);
 }
 
@@ -235,6 +252,7 @@ unsafe extern fn webview_load_changed_cb(
 	arg:gpointer,
 ) {
 	let w:*mut WebView = mem::transmute(arg);
+
 	if event == WEBKIT_LOAD_FINISHED {
 		(*w).ready = 1;
 	}
@@ -286,11 +304,13 @@ unsafe extern fn webview_dispatch_wrapper(userdata:gpointer) -> gboolean {
 
 	loop {
 		let arg:*mut DispatchArg = mem::transmute(g_async_queue_try_pop((*webview).queue));
+
 		if arg.is_null() {
 			break;
 		}
 
 		((*arg).func)(webview, (*arg).arg);
+
 		let _ = Box::from_raw(arg);
 	}
 
@@ -304,6 +324,7 @@ unsafe extern fn webview_dispatch(webview:*mut WebView, func:DispatchFn, arg:*mu
 	let queue = (*webview).queue;
 
 	g_async_queue_lock(queue);
+
 	g_async_queue_push_unlocked(queue, mem::transmute(Box::into_raw(arg)));
 
 	if g_async_queue_length_unlocked(queue) == 1 {
@@ -324,5 +345,6 @@ unsafe extern fn webview_exit(webview:*mut WebView) { (*webview).should_exit = 1
 #[no_mangle]
 unsafe extern fn webview_print_log(s:*const c_char) {
 	let format = std::ffi::CString::new("%s\n").unwrap();
+
 	libc::printf(format.as_ptr(), s);
 }

@@ -154,12 +154,14 @@ where
 	/// Defaults to `"Application"`.
 	pub fn title(mut self, title:&'a str) -> Self {
 		self.title = title;
+
 		self
 	}
 
 	/// Sets the content of the WebView. Either a URL or a HTML string.
 	pub fn content(mut self, content:Content<C>) -> Self {
 		self.content = Some(content);
+
 		self
 	}
 
@@ -168,7 +170,9 @@ where
 	/// Defaults to 800 x 600.
 	pub fn size(mut self, width:i32, height:i32) -> Self {
 		self.width = width;
+
 		self.height = height;
+
 		self
 	}
 
@@ -178,6 +182,7 @@ where
 	/// Defaults to `true`.
 	pub fn resizable(mut self, resizable:bool) -> Self {
 		self.resizable = resizable;
+
 		self
 	}
 
@@ -186,6 +191,7 @@ where
 	/// Defaults to `true` for debug builds, `false` for release builds.
 	pub fn debug(mut self, debug:bool) -> Self {
 		self.debug = debug;
+
 		self
 	}
 
@@ -194,6 +200,7 @@ where
 	/// defaults to `false`
 	pub fn frameless(mut self, frameless:bool) -> Self {
 		self.frameless = frameless;
+
 		self
 	}
 
@@ -208,6 +215,7 @@ where
 	/// [`step()`]: struct.WebView.html#method.step
 	pub fn invoke_handler(mut self, invoke_handler:I) -> Self {
 		self.invoke_handler = Some(invoke_handler);
+
 		self
 	}
 
@@ -216,6 +224,7 @@ where
 	/// without synchronization overhead.
 	pub fn user_data(mut self, user_data:T) -> Self {
 		self.user_data = Some(user_data);
+
 		self
 	}
 
@@ -228,14 +237,18 @@ where
 		}
 
 		let title = CString::new(self.title)?;
+
 		let content = require_field!(content);
+
 		let url = match content {
 			Content::Url(url) => CString::new(url.as_ref())?,
 			Content::Html(html) => {
 				CString::new(format!("data:text/html,{}", encode(html.as_ref())))?
 			},
 		};
+
 		let user_data = require_field!(user_data);
+
 		let invoke_handler = require_field!(invoke_handler);
 
 		WebView::new(
@@ -310,6 +323,7 @@ impl<'a, T> WebView<'a, T> {
 			invoke_handler:Box::new(invoke_handler),
 			result:Ok(()),
 		});
+
 		let user_data_ptr = Box::into_raw(user_data);
 
 		unsafe {
@@ -327,6 +341,7 @@ impl<'a, T> WebView<'a, T> {
 
 			if inner.is_null() {
 				Box::<UserData<T>>::from_raw(user_data_ptr);
+
 				Err(Error::Initialization)
 			} else {
 				Ok(WebView::from_ptr(inner))
@@ -376,13 +391,16 @@ impl<'a, T> WebView<'a, T> {
 	/// instance.
 	pub fn eval(&mut self, js:&str) -> WVResult {
 		let js = CString::new(js)?;
+
 		let ret = unsafe { webview_eval(self.inner.unwrap(), js.as_ptr()) };
+
 		if ret != 0 { Err(Error::JsEvaluation) } else { Ok(()) }
 	}
 
 	/// Injects the provided string as CSS within the `WebView` instance.
 	pub fn inject_css(&mut self, css:&str) -> WVResult {
 		let inject_func = format!("{}({})", CSS_INJECT_FUNCTION, escape(css));
+
 		self.eval(&inject_func).map_err(|_| Error::CssInjection)
 	}
 
@@ -401,6 +419,7 @@ impl<'a, T> WebView<'a, T> {
 	/// ```
 	pub fn set_color<C:Into<Color>>(&mut self, color:C) {
 		let color = color.into();
+
 		unsafe { webview_set_color(self.inner.unwrap(), color.r, color.g, color.b, color.a) }
 	}
 
@@ -413,7 +432,9 @@ impl<'a, T> WebView<'a, T> {
 	/// [`Error::NulByte`]: enum.Error.html#variant.NulByte
 	pub fn set_title(&mut self, title:&str) -> WVResult {
 		let title = CString::new(title)?;
+
 		unsafe { webview_set_title(self.inner.unwrap(), title.as_ptr()) }
+
 		Ok(())
 	}
 
@@ -434,6 +455,7 @@ impl<'a, T> WebView<'a, T> {
 			match webview_loop(self.inner.unwrap(), 1) {
 				0 => {
 					let closure_result = &mut self.user_data_wrapper_mut().result;
+
 					match closure_result {
 						Ok(_) => Some(Ok(())),
 						e => Some(mem::replace(e, Ok(()))),
@@ -459,7 +481,9 @@ impl<'a, T> WebView<'a, T> {
 	pub fn into_inner(mut self) -> T {
 		unsafe {
 			let user_data = self._into_inner();
+
 			mem::forget(self);
+
 			user_data
 		}
 	}
@@ -472,10 +496,15 @@ impl<'a, T> WebView<'a, T> {
 			.expect("A dispatch channel thread panicked while holding mutex to WebView.");
 
 		let user_data_ptr = self.user_data_wrapper_ptr();
+
 		webview_exit(self.inner.unwrap());
+
 		webview_free(self.inner.unwrap());
+
 		let user_data = *Box::from_raw(user_data_ptr);
+
 		std::mem::drop(lock);
+
 		user_data.inner
 	}
 }
@@ -486,6 +515,7 @@ impl<'a, T> Drop for WebView<'a, T> {
 			unsafe {
 				self._into_inner();
 			}
+
 			self.inner = None;
 		}
 	}
@@ -526,7 +556,9 @@ impl<T> Handle<T> {
 		// Abort if WebView has been dropped. Otherwise, keep it alive until
 		// closure has been dispatched.
 		let mutex = self.live.upgrade().ok_or(Error::Dispatch)?;
+
 		let closure = Box::new(SendBoxFnOnce::new(f));
+
 		let _lock = mutex.read().map_err(|_| Error::Dispatch)?;
 
 		// Send closure to webview.
@@ -537,6 +569,7 @@ impl<T> Handle<T> {
 				Box::into_raw(closure) as _,
 			)
 		}
+
 		Ok(())
 	}
 }
@@ -547,11 +580,14 @@ unsafe impl<T> Sync for Handle<T> {}
 extern fn ffi_dispatch_handler<T>(webview:*mut CWebView, arg:*mut c_void) {
 	unsafe {
 		let mut handle = WebView::<T>::from_ptr(webview);
+
 		let result = {
 			let callback =
 				Box::<SendBoxFnOnce<'static, (&mut WebView<T>,), WVResult>>::from_raw(arg as _);
+
 			callback.call(&mut handle)
 		};
+
 		handle.user_data_wrapper_mut().result = result;
 		// Do not clean up the webview on drop of the temporary WebView in
 		// handle
@@ -562,8 +598,11 @@ extern fn ffi_dispatch_handler<T>(webview:*mut CWebView, arg:*mut c_void) {
 extern fn ffi_invoke_handler<T>(webview:*mut CWebView, arg:*const c_char) {
 	unsafe {
 		let arg = CStr::from_ptr(arg).to_string_lossy().to_string();
+
 		let mut handle = WebView::<T>::from_ptr(webview);
+
 		let result = ((*handle.user_data_wrapper_ptr()).invoke_handler)(&mut handle, &arg);
+
 		handle.user_data_wrapper_mut().result = result;
 		// Do not clean up the webview on drop of the temporary WebView in
 		// handle

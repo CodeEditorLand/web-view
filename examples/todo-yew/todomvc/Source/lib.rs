@@ -53,10 +53,12 @@ pub enum Msg {
 
 impl Component for Model {
 	type Message = Msg;
+
 	type Properties = ();
 
 	fn create(_:Self::Properties, _:ComponentLink<Self>) -> Self {
 		let storage = StorageService::new(Area::Local);
+
 		let entries = {
 			if let Json(Ok(restored_model)) = storage.restore(KEY) {
 				restored_model
@@ -64,7 +66,9 @@ impl Component for Model {
 				Vec::new()
 			}
 		};
+
 		let state = State { entries, filter:Filter::All, value:"".into(), edit_value:"".into() };
+
 		Model { storage, state }
 	}
 
@@ -73,20 +77,26 @@ impl Component for Model {
 			Msg::Add => {
 				let entry =
 					Entry { description:self.state.value.clone(), completed:false, editing:false };
+
 				self.state.entries.push(entry);
+
 				self.state.value = "".to_string();
 			},
 			Msg::Edit(idx) => {
 				let edit_value = self.state.edit_value.clone();
+
 				self.state.complete_edit(idx, edit_value);
+
 				self.state.edit_value = "".to_string();
 			},
 			Msg::Update(val) => {
 				println!("Input: {}", val);
+
 				self.state.value = val;
 			},
 			Msg::UpdateEdit(val) => {
 				println!("Input: {}", val);
+
 				self.state.edit_value = val;
 			},
 			Msg::Remove(idx) => {
@@ -97,10 +107,12 @@ impl Component for Model {
 			},
 			Msg::ToggleEdit(idx) => {
 				self.state.edit_value = self.state.entries[idx].description.clone();
+
 				self.state.toggle_edit(idx);
 			},
 			Msg::ToggleAll => {
 				let status = !self.state.is_all_completed();
+
 				self.state.toggle_all(status);
 			},
 			Msg::Toggle(idx) => {
@@ -111,7 +123,9 @@ impl Component for Model {
 			},
 			Msg::Nope => {},
 		}
+
 		self.storage.store(KEY, Json(&self.state.entries));
+
 		true
 	}
 
@@ -155,6 +169,7 @@ impl Component for Model {
 impl Model {
 	fn view_filter(&self, filter:Filter) -> Html<Model> {
 		let flt = filter.clone();
+
 		html! {
 			<li>
 				<a class=if self.state.filter == flt { "selected" } else { "not-selected" }
@@ -188,12 +203,15 @@ impl Model {
 
 fn view_entry((idx, entry):(usize, &Entry)) -> Html<Model> {
 	let mut class = "todo".to_string();
+
 	if entry.editing {
 		class.push_str(" editing");
 	}
+
 	if entry.completed {
 		class.push_str(" completed");
 	}
+
 	html! {
 		<li class=class>
 			<div class="view">
@@ -277,43 +295,58 @@ impl State {
 
 	fn clear_completed(&mut self) {
 		let entries = self.entries.drain(..).filter(|e| Filter::Active.fit(e)).collect();
+
 		self.entries = entries;
 	}
 
 	fn toggle(&mut self, idx:usize) {
 		let filter = self.filter.clone();
+
 		let mut entries = self.entries.iter_mut().filter(|e| filter.fit(e)).collect::<Vec<_>>();
+
 		let entry = entries.get_mut(idx).unwrap();
+
 		entry.completed = !entry.completed;
 	}
 
 	fn toggle_edit(&mut self, idx:usize) {
 		let filter = self.filter.clone();
+
 		let mut entries = self.entries.iter_mut().filter(|e| filter.fit(e)).collect::<Vec<_>>();
+
 		let entry = entries.get_mut(idx).unwrap();
+
 		entry.editing = !entry.editing;
 	}
 
 	fn complete_edit(&mut self, idx:usize, val:String) {
 		let filter = self.filter.clone();
+
 		let mut entries = self.entries.iter_mut().filter(|e| filter.fit(e)).collect::<Vec<_>>();
+
 		let entry = entries.get_mut(idx).unwrap();
+
 		entry.description = val;
+
 		entry.editing = !entry.editing;
 	}
 
 	fn remove(&mut self, idx:usize) {
 		let idx = {
 			let filter = self.filter.clone();
+
 			let entries = self
 				.entries
 				.iter()
 				.enumerate()
 				.filter(|&(_, e)| filter.fit(e))
 				.collect::<Vec<_>>();
+
 			let &(idx, _) = entries.get(idx).unwrap();
+
 			idx
 		};
+
 		self.entries.remove(idx);
 	}
 }

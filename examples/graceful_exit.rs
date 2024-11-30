@@ -13,6 +13,7 @@ fn main() {
 		.invoke_handler(invoke_handler)
 		.run()
 		.unwrap();
+
 	println!("res: {:?}", res)
 }
 
@@ -21,11 +22,15 @@ fn invoke_handler(wv:&mut WebView<usize>, arg:&str) -> WVResult {
 		wv.eval("init()")?;
 	} else if arg == "update" {
 		*wv.user_data_mut() += 1;
+
 		let js = format!("setCurrentCount({})", wv.user_data());
+
 		wv.eval(&js)?;
 	} else if arg == "exit" {
 		println!("exiting!");
+
 		wv.exit();
 	}
+
 	Ok(())
 }

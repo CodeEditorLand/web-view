@@ -15,6 +15,7 @@ fn main() {
 				"exit" => webview.exit(),
 				_ => (),
 			}
+
 			Ok(())
 		})
 		.run()

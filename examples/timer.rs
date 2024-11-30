@@ -14,6 +14,7 @@ fn main() {
 	let counter = Arc::new(Mutex::new(0));
 
 	let counter_inner = counter.clone();
+
 	let webview = web_view::builder()
 		.title("Timer example")
 		.content(Content::Html(HTML))
@@ -25,8 +26,10 @@ fn main() {
 			match arg {
 				"reset" => {
 					*webview.user_data_mut() += 10;
+
 					let mut counter = counter.lock().unwrap();
 					*counter = 0;
+
 					render(webview, *counter)?;
 				},
 				"exit" => {
@@ -34,25 +37,31 @@ fn main() {
 				},
 				_ => unimplemented!(),
 			};
+
 			Ok(())
 		})
 		.build()
 		.unwrap();
 
 	let handle = webview.handle();
+
 	thread::spawn(move || {
 		loop {
 			{
 				let mut counter = counter_inner.lock().unwrap();
 				*counter += 1;
+
 				let count = *counter;
+
 				handle
 					.dispatch(move |webview| {
 						*webview.user_data_mut() -= 1;
+
 						render(webview, count)
 					})
 					.unwrap();
 			}
+
 			thread::sleep(Duration::from_secs(1));
 		}
 	});
@@ -62,7 +71,9 @@ fn main() {
 
 fn render(webview:&mut WebView<i32>, counter:u32) -> WVResult {
 	let user_data = *webview.user_data();
+
 	println!("counter: {}, userdata: {}", counter, user_data);
+
 	webview.eval(&format!("updateTicks({}, {})", counter, user_data))
 }
 

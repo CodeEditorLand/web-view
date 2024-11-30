@@ -43,7 +43,9 @@ fn main() {
 			.define("OBJC_OLD_DISPATCH_PROTOTYPES", "1")
 			.flag("-x")
 			.flag("objective-c");
+
 		println!("cargo:rustc-link-lib=framework=Cocoa");
+
 		println!("cargo:rustc-link-lib=framework=WebKit");
 	} else {
 		panic!("unsupported target");
