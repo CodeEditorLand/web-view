@@ -32,8 +32,8 @@ gobject-sys = "0.9"
 webkit2gtk-sys = { version = "0.10", features = ["v2_8"] }
 gdk-sys = "0.9"
 gio-sys = "0.9"
-libc = "0.2"
+libc = { version = "0.2" }
 
 [build-dependencies]
-cc = "1"
+cc = { version = "1" }
 pkg-config = "0.3"
