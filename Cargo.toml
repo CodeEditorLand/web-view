@@ -7,7 +7,7 @@ authors = [
 	"Sam Green <sam.green81@gmail.com>",
 ]
 readme = "README.md"
-license = "MIT"
+license-file = "LICENSE"
 repository = "https://github.com/Boscop/web-view"
 description = "Rust bindings for webview, a tiny cross-platform library to render web-based GUIs for desktop applications"
 keywords = ["web", "gui", "desktop", "electron", "webkit"]
