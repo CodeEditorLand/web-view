@@ -1,11 +1,1 @@
-{
-	"scripts": {
-		"build": "pulp build --to dist/app.js",
-		"dev": "npm-run-all -p -r watch-output watch-fast reload",
-		"dev-slow": "npm-run-all -p -r watch reload",
-		"prod": "pulp browserify -O --to build/app.js && parcel build build/app.js && inline-assets --htmlmin --cssmin index.html dist/bundle.html",
-		"reload": "browser-sync start --server --files \"dist/**/*.*, index.html, *.css\" --no-ghost-mode --port 2345 --no-open",
-		"watch-fast": "webpack --entry ./entry.js --output-filename dist/app.js --progress --watch",
-		"watch-output": "pulp -w build"
-	}
-}
+"Cannot index string with string \"devDependencies\""
