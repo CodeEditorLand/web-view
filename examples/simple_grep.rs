@@ -10,7 +10,7 @@ use std::{error::Error, ffi::OsString};
 
 use grep::{
 	regex::RegexMatcher,
-	searcher::{sinks::UTF8, BinaryDetection, SearcherBuilder},
+	searcher::{BinaryDetection, SearcherBuilder, sinks::UTF8},
 };
 use tfd::MessageBoxIcon;
 use walkdir::WalkDir;

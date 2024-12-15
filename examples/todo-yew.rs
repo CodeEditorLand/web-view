@@ -9,7 +9,7 @@ extern crate web_view;
 
 use std::{borrow::Cow, sync::mpsc, thread};
 
-use actix_web::{body::Body, web, App, HttpRequest, HttpResponse, HttpServer};
+use actix_web::{App, HttpRequest, HttpResponse, HttpServer, body::Body, web};
 use futures::future::Future;
 use mime_guess::from_path;
 use rust_embed::RustEmbed;

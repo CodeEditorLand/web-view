@@ -1,8 +1,8 @@
 use std::path::PathBuf;
 
-use tfd::MessageBoxIcon;
 use WVResult;
 use WebView;
+use tfd::MessageBoxIcon;
 
 /// A builder for opening a new dialog window.
 #[deprecated(

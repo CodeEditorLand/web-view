@@ -2,10 +2,10 @@
 
 use std::{ffi::CStr, mem, ptr};
 
-use gdk_sys::{gdk_threads_add_idle, GdkRGBA};
+use gdk_sys::{GdkRGBA, gdk_threads_add_idle};
 use gio_sys::GAsyncResult;
 use glib_sys::*;
-use gobject_sys::{g_signal_connect_data, GObject};
+use gobject_sys::{GObject, g_signal_connect_data};
 use gtk_sys::*;
 use javascriptcore_sys::*;
 use libc::{c_char, c_double, c_int, c_void};
