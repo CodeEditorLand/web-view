@@ -4,15 +4,15 @@ use serde_derive::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 use strum_macros::{EnumIter, ToString};
 use yew::{
-	events::IKeyboardEvent,
-	format::Json,
-	html,
-	services::storage::{Area, StorageService},
 	Component,
 	ComponentLink,
 	Href,
 	Html,
 	ShouldRender,
+	events::IKeyboardEvent,
+	format::Json,
+	html,
+	services::storage::{Area, StorageService},
 };
 
 const KEY:&'static str = "yew.todomvc.self";
@@ -53,7 +53,6 @@ pub enum Msg {
 
 impl Component for Model {
 	type Message = Msg;
-
 	type Properties = ();
 
 	fn create(_:Self::Properties, _:ComponentLink<Self>) -> Self {
