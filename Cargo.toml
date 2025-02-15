@@ -1,16 +1,33 @@
+[dependencies]
+boxfnonce = { version = "0.1" }
+tinyfiledialogs = { version = "3.3.9" }
+urlencoding = { version = "1.0" }
+webview-sys = { path = "webview-sys", version = "0.5" }
+
+[dev-dependencies]
+actix-rt = "0.2"
+actix-web = "1.0"
+futures = { version = "0.1" }
+grep = { version = "0.2.4" }
+mime_guess = { version = "2.0.1" }
+rust-embed = "5.1.0"
+serde = { version = "1.0" }
+serde_derive = { version = "1.0" }
+serde_json = { version = "1.0" }
+walkdir = { version = "2.3.1" }
+
+[features]
+edge = ["webview-sys/edge"]
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "web-view"
-version = "0.6.2"
 authors = [
 	"Boscop",
 	"zxey <r.hozak@seznam.cz>",
 	"Sam Green <sam.green81@gmail.com>",
 ]
-readme = "README.md"
-license-file = "LICENSE"
-repository = "https://github.com/Boscop/web-view"
-description = "Rust bindings for webview, a tiny cross-platform library to render web-based GUIs for desktop applications"
-keywords = ["web", "gui", "desktop", "electron", "webkit"]
 categories = [
 	"gui",
 	"web-programming",
@@ -18,25 +35,11 @@ categories = [
 	"rendering",
 	"visualization",
 ]
+description = "Rust bindings for webview, a tiny cross-platform library to render web-based GUIs for desktop applications"
 exclude = ["examples/todo-ps/dist/**/*", "examples/elm-counter/index.html"]
-
-[dependencies]
-urlencoding = { version = "1.0" }
-webview-sys = { path = "webview-sys", version = "0.5" }
-boxfnonce = { version = "0.1" }
-tinyfiledialogs = { version = "3.3.9" }
-
-[features]
-edge = ["webview-sys/edge"]
-
-[dev-dependencies]
-serde = { version = "1.0" }
-serde_derive = { version = "1.0" }
-serde_json = { version = "1.0" }
-actix-web = "1.0"
-actix-rt = "0.2"
-rust-embed = "5.1.0"
-mime_guess = { version = "2.0.1" }
-futures = { version = "0.1" }
-grep = { version = "0.2.4" }
-walkdir = { version = "2.3.1" }
+keywords = ["web", "gui", "desktop", "electron", "webkit"]
+license-file = "LICENSE"
+name = "web-view"
+readme = "README.md"
+repository = "https://github.com/Boscop/web-view"
+version = "0.6.2"

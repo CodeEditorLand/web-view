@@ -1,12 +1,15 @@
-[package]
-name = "todomvc"
-version = "0.1.0"
-authors = ["Denis Kolodin <deniskolodin@gmail.com>"]
-edition = "2018"
-
 [dependencies]
-strum = "0.13"
-strum_macros = "0.13"
 serde = "1"
 serde_derive = "1"
+strum = "0.13"
+strum_macros = "0.13"
 yew = "0.10.0"
+
+[lib]
+path = "Source/lib.rs"
+
+[package]
+authors = ["Denis Kolodin <deniskolodin@gmail.com>"]
+edition = "2018"
+name = "todomvc"
+version = "0.1.0"
