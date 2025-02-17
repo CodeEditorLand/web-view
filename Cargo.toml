@@ -1,20 +1,20 @@
 [dependencies]
 boxfnonce = { version = "0.1" }
-tinyfiledialogs = { version = "3.3.9" }
-urlencoding = { version = "1.0" }
+tinyfiledialogs = { version = "3.9.1" }
+urlencoding = { version = "2.1" }
 webview-sys = { path = "webview-sys", version = "0.5" }
 
 [dev-dependencies]
-actix-rt = "0.2"
-actix-web = "1.0"
-futures = { version = "0.1" }
-grep = { version = "0.2.4" }
-mime_guess = { version = "2.0.1" }
-rust-embed = "5.1.0"
+actix-rt = "2.10"
+actix-web = "4.9"
+futures = { version = "0.3" }
+grep = { version = "0.3.2" }
+mime_guess = { version = "2.0.5" }
+rust-embed = "8.5.0"
 serde = { version = "1.0" }
 serde_derive = { version = "1.0" }
 serde_json = { version = "1.0" }
-walkdir = { version = "2.3.1" }
+walkdir = { version = "2.5.0" }
 
 [features]
 edge = ["webview-sys/edge"]
